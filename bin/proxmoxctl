@@ -1,0 +1,102 @@
+#!/bin/bash
+set -euo pipefail
+
+SCRIPT_PATH="$(readlink -f -- "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$SCRIPT_PATH")" && pwd)"
+LIB="$(cd -- "$SCRIPT_DIR/../lib/proxmoxctl" && pwd)"
+
+MODULES=(
+    common.sh
+    guest.sh
+    node.sh
+    power.sh
+    snapshot.sh
+    backup.sh
+    config.sh
+)
+
+for module in "${MODULES[@]}"; do
+
+    if [[ ! -r "$LIB/$module" ]]; then
+        echo \
+            "Missing proxmoxctl module: $LIB/$module" \
+            >&2
+        exit 1
+    fi
+
+    # shellcheck source=/dev/null
+    source "$LIB/$module"
+done
+
+case "${1:-}" in
+
+    list)
+        cmd_list "$@"
+        ;;
+
+    status)
+        cmd_status "$@"
+        ;;
+
+    config)
+        cmd_config "$@"
+        ;;
+
+    node-status)
+        cmd_node_status "$@"
+        ;;
+
+    start)
+        cmd_start "$@"
+        ;;
+
+    shutdown)
+        cmd_shutdown "$@"
+        ;;
+
+    reboot)
+        cmd_reboot "$@"
+        ;;
+
+    restart)
+        cmd_restart "$@"
+        ;;
+
+    wait)
+        cmd_wait "$@"
+        ;;
+
+    snapshots)
+        cmd_snapshots "$@"
+        ;;
+
+    snapshot)
+        cmd_snapshot "$@"
+        ;;
+
+    backup)
+        cmd_backup "$@"
+        ;;
+
+    set-memory)
+        cmd_set_memory "$@"
+        ;;
+
+    set-cores)
+        cmd_set_cores "$@"
+        ;;
+
+    help|-h|--help|"")
+        usage
+        ;;
+
+    *)
+        echo \
+            "Unknown command: $1" \
+            >&2
+
+        usage >&2
+        exit 1
+        ;;
+
+esac

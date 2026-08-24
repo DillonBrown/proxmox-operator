@@ -1,0 +1,6 @@
+# Local credentials and overrides
+.env
+.env.*
+*.env
+!examples/*.env.example
+*.local
