@@ -8,7 +8,33 @@ surface rather than unrestricted hypervisor access.
 The tool talks to the Proxmox VE API using its own local configuration. It
 does not require, expose, or grant host shell access to the Proxmox node.
 
-## Setup expectations
+## Installation
+
+Clone or unpack this repository, then install the launcher and modules under
+the desired prefix:
+
+```bash
+./install.sh
+```
+
+The default prefix is `/usr/local`, which installs the launcher at
+`/usr/local/bin/proxmoxctl` and modules under `/usr/local/lib/proxmoxctl`.
+Choose another absolute prefix with `--prefix`:
+
+```bash
+./install.sh --prefix /opt/proxmoxctl
+```
+
+The installer refuses to overwrite an existing launcher or module. Use
+`--force` only when you intentionally want to replace an existing install:
+
+```bash
+./install.sh --prefix /usr/local --force
+```
+
+It installs no credentials and creates no configuration files.
+
+## Configuration and least privilege
 
 Install the launcher and its `lib/proxmoxctl` modules together. The launcher
 loads a protected local environment file whose location is configured by the
@@ -16,6 +42,20 @@ shared module. That file must provide the Proxmox API endpoint, target node,
 token identity, and token secret. Keep it readable only by the account that
 runs `proxmoxctl`; do not pass token material on the command line, commit it,
 or print it in logs.
+
+Start from [`examples/proxmox.env.example`](examples/proxmox.env.example).
+It contains placeholders only and uses the exact names expected by the CLI:
+
+```text
+PROXMOX_HOST
+PROXMOX_NODE
+PROXMOX_TOKEN_ID
+PROXMOX_TOKEN_SECRET
+```
+
+Copy it only to the protected location configured by
+`lib/proxmoxctl/common.sh`, replace the placeholders locally, and restrict
+file permissions. The installer deliberately does not perform that step.
 
 Create a dedicated API token with only the permissions required for the
 commands you intend to use. For read-only inventory and node status, grant
@@ -43,6 +83,12 @@ VMID or an exact guest name. `node-status --json` returns a stable,
 machine-readable capacity snapshot containing node identity, logical CPU
 core count, current CPU utilization, load averages when supplied by Proxmox,
 and total/used/free memory in bytes.
+
+Example capacity query:
+
+```bash
+proxmoxctl node-status --json
+```
 
 ### Guest operations
 
@@ -107,3 +153,9 @@ lib/proxmoxctl/config.sh       Guest CPU and memory limit changes
   recovery requirements. A snapshot is not a substitute for a backup.
 - Treat output as operational data. The tool intentionally keeps API
   credentials out of output and command arguments.
+
+## Optional OpenClaw integration
+
+OpenClaw can call the installed CLI as one consumer among many. Keep the same
+dedicated token, least-privilege permissions, and protected configuration
+file regardless of whether the caller is a person, a script, or an agent.
