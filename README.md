@@ -3,6 +3,8 @@
 `proxmoxctl` provides a restricted command-line interface for the configured
 Proxmox environment.
 
+Give an OpenClaw agent useful Proxmox operational authority without giving it root access to the hypervisor.
+
 ## Node capacity status
 
 Use the read-only node status command for host capacity metrics:
