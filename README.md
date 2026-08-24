@@ -135,6 +135,7 @@ bin/proxmoxctl                 Command launcher and command dispatch
 lib/proxmoxctl/common.sh       Protected configuration loading and API helpers
 lib/proxmoxctl/guest.sh        Guest inventory, status, and configuration reads
 lib/proxmoxctl/node.sh         Read-only node capacity JSON
+lib/proxmoxctl/node_status.py  Node-status JSON formatter
 lib/proxmoxctl/power.sh        Guest power and wait operations
 lib/proxmoxctl/snapshot.sh     Snapshot listing and creation
 lib/proxmoxctl/backup.sh       Backup submission and completion waiting

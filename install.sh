@@ -71,6 +71,7 @@ MODULES=(
     config.sh
     guest.sh
     node.sh
+    node_status.py
     power.sh
     snapshot.sh
 )
