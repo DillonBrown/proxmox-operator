@@ -17,8 +17,9 @@ the desired prefix:
 ./install.sh
 ```
 
-The default prefix is `/usr/local`, which installs the launcher at
-`/usr/local/bin/proxmoxctl` and modules under `/usr/local/lib/proxmoxctl`.
+The default prefix is `/usr/local`, which installs the canonical launcher at
+`/usr/local/bin/proxmoxctl`, its short alias at `/usr/local/bin/proxctl`, and
+modules under `/usr/local/lib/proxmoxctl`.
 Choose another absolute prefix with `--prefix`:
 
 ```bash
@@ -64,10 +65,13 @@ guest state or configuration require their corresponding, narrowly scoped
 Proxmox permissions. The CLI makes no attempt to elevate or bypass missing
 permissions.
 
-OpenClaw can invoke this CLI as an optional integration, but `proxmoxctl`
+An Agent can invoke this CLI as an optional integration, but `proxmoxctl`
 remains a standalone tool with the same safety boundaries in every caller.
 
 ## Commands
+
+`proxmoxctl` is the canonical command. `proxctl` is an installed short alias
+with the same commands and behavior.
 
 ### Read-only inspection
 
@@ -155,8 +159,8 @@ lib/proxmoxctl/config.sh       Guest CPU and memory limit changes
 - Treat output as operational data. The tool intentionally keeps API
   credentials out of output and command arguments.
 
-## Optional OpenClaw integration
+## Optional agent integration
 
-OpenClaw can call the installed CLI as one consumer among many. Keep the same
+An Agent can call the installed CLI as one consumer among many. Keep the same
 dedicated token, least-privilege permissions, and protected configuration
 file regardless of whether the caller is a person, a script, or an agent.

@@ -5,7 +5,8 @@ description: Manage and inspect the local Proxmox VE environment using the restr
 
 # Proxmox Management
 
-Use the `exec` tool with `/usr/local/bin/proxmoxctl`.
+Use the `exec` tool with `/usr/local/bin/proxmoxctl`. `/usr/local/bin/proxctl`
+is an equivalent short alias.
 
 Do not construct raw Proxmox API requests when `proxmoxctl` can perform the task.
 
