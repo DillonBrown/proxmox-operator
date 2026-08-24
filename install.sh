@@ -64,6 +64,7 @@ fi
 SOURCE_BIN="$SCRIPT_DIR/bin/proxmoxctl"
 SOURCE_LIB="$SCRIPT_DIR/lib/proxmoxctl"
 TARGET_BIN="$PREFIX/bin/proxmoxctl"
+TARGET_SHORT_BIN="$PREFIX/bin/proxctl"
 TARGET_LIB="$PREFIX/lib/proxmoxctl"
 MODULES=(
     backup.sh
@@ -88,7 +89,7 @@ for module in "${MODULES[@]}"; do
     fi
 done
 
-TARGETS=("$TARGET_BIN")
+TARGETS=("$TARGET_BIN" "$TARGET_SHORT_BIN")
 for module in "${MODULES[@]}"; do
     TARGETS+=("$TARGET_LIB/$module")
 done
@@ -105,6 +106,7 @@ fi
 
 install -d "$PREFIX/bin" "$TARGET_LIB"
 install -m 0755 "$SOURCE_BIN" "$TARGET_BIN"
+ln -sfn "proxmoxctl" "$TARGET_SHORT_BIN"
 
 for module in "${MODULES[@]}"; do
     install -m 0644 "$SOURCE_LIB/$module" "$TARGET_LIB/$module"
