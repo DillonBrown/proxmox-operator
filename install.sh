@@ -71,6 +71,7 @@ MODULES=(
     common.sh
     config.sh
     guest.sh
+    guest_list.py
     node.sh
     node_status.py
     power.sh

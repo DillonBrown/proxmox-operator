@@ -65,6 +65,23 @@ guest state or configuration require their corresponding, narrowly scoped
 Proxmox permissions. The CLI makes no attempt to elevate or bypass missing
 permissions.
 
+### API token setup
+
+Follow the Proxmox [API token documentation](https://pve.proxmox.com/pve-docs/pve-admin-guide.html#pveum_tokens)
+to create a dedicated, non-root service user and a clearly named token for
+this integration. Store the token secret when Proxmox displays it: it is shown
+only once. Keep privilege separation enabled and assign the token only the
+ACLs required for the commands you enable, scoped to the intended node,
+guests, and backup storage; do not grant broad administrator, host, user, or
+ACL-management privileges.
+
+Protect the environment file with mode `0600`, readable only by the account
+that runs the CLI. Rotate tokens on a defined schedule and revoke them
+immediately when the integration is retired or suspected compromised. `proxmoxctl` verifies the
+Proxmox TLS certificate. Install the appropriate CA certificate in the system
+trust store, or set the optional `PROXMOX_CA_FILE` to a readable PEM CA bundle
+for a private CA; do not disable certificate verification.
+
 An Agent can invoke this CLI as an optional integration, but `proxmoxctl`
 remains a standalone tool with the same safety boundaries in every caller.
 
@@ -76,13 +93,14 @@ with the same commands and behavior.
 ### Read-only inspection
 
 ```text
-proxmoxctl list
+proxmoxctl list [--json]
 proxmoxctl status <VMID|name>
 proxmoxctl config <VMID|name>
 proxmoxctl node-status --json
 ```
 
-`list` discovers the live guest inventory. `status` and `config` accept a
+`list` discovers the live guest inventory; `list --json` returns a stable,
+machine-readable `guests` array sorted by VMID. `status` and `config` accept a
 VMID or an exact guest name. `node-status --json` returns a stable,
 machine-readable capacity snapshot containing node identity, logical CPU
 core count, current CPU utilization, load averages when supplied by Proxmox,
@@ -138,6 +156,7 @@ proxmoxctl config 101
 bin/proxmoxctl                 Command launcher and command dispatch
 lib/proxmoxctl/common.sh       Protected configuration loading and API helpers
 lib/proxmoxctl/guest.sh        Guest inventory, status, and configuration reads
+lib/proxmoxctl/guest_list.py   Guest inventory JSON formatter
 lib/proxmoxctl/node.sh         Read-only node capacity JSON
 lib/proxmoxctl/node_status.py  Node-status JSON formatter
 lib/proxmoxctl/power.sh        Guest power and wait operations

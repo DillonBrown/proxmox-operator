@@ -14,7 +14,7 @@ Do not construct raw Proxmox API requests when `proxmoxctl` can perform the task
 
 ### Inventory and inspection
 
-- `/usr/local/bin/proxmoxctl list`
+- `/usr/local/bin/proxmoxctl list [--json]`
 - `/usr/local/bin/proxmoxctl status <VMID|name>`
 - `/usr/local/bin/proxmoxctl config <VMID|name>`
 - `/usr/local/bin/proxmoxctl node-status --json`

@@ -4,3 +4,6 @@
 *.env
 !examples/*.env.example
 *.local
+
+# Agent directive
+ROADMAP.md

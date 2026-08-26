@@ -1,6 +1,21 @@
 #!/bin/bash
 
 cmd_list() {
+    local format="${2:-}"
+    local module_dir
+
+    module_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+    if [[ -n "$format" && "$format" != "--json" ]] || (( $# > 2 )); then
+        echo "Usage: proxmoxctl list [--json]" >&2
+        return 1
+    fi
+
+    if [[ "$format" == "--json" ]]; then
+        resources | python3 "$module_dir/guest_list.py"
+        return
+    fi
+
     resources | python3 -c '
 import json
 import sys
