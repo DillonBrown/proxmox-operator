@@ -16,16 +16,26 @@ source "$ENV_FILE"
 
 API="https://${PROXMOX_HOST}:8006/api2/json"
 AUTH="Authorization: PVEAPIToken=${PROXMOX_TOKEN_ID}=${PROXMOX_TOKEN_SECRET}"
+CURL_TLS_OPTIONS=()
+
+if [[ -n "${PROXMOX_CA_FILE:-}" ]]; then
+    if [[ ! -r "$PROXMOX_CA_FILE" ]]; then
+        echo "Cannot read PROXMOX_CA_FILE: $PROXMOX_CA_FILE" >&2
+        exit 1
+    fi
+
+    CURL_TLS_OPTIONS=(--cacert "$PROXMOX_CA_FILE")
+fi
 
 api_get() {
-    curl -fsSk -H "$AUTH" "$1"
+    curl -fsS "${CURL_TLS_OPTIONS[@]}" -H "$AUTH" "$1"
 }
 
 api_post() {
     local url="$1"
     shift
 
-    curl -fsSk \
+    curl -fsS "${CURL_TLS_OPTIONS[@]}" \
         -X POST \
         -H "$AUTH" \
         "$@" \
@@ -36,7 +46,7 @@ api_put() {
     local url="$1"
     shift
 
-    curl -fsSk \
+    curl -fsS "${CURL_TLS_OPTIONS[@]}" \
         -X PUT \
         -H "$AUTH" \
         "$@" \
@@ -292,7 +302,7 @@ wait_for_state() {
 usage() {
     cat <<'USAGE'
 Usage:
-  proxmoxctl list
+  proxmoxctl list [--json]
   proxmoxctl status <VMID|name>
   proxmoxctl config <VMID|name>
   proxmoxctl node-status --json
