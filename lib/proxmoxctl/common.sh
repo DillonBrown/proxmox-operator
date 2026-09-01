@@ -119,8 +119,13 @@ print("{}|{}|{}".format(
 
 guest_info() {
     local target="$1"
+    local resolved
 
-    IFS='|' read -r TYPE VMID NAME <<< "$(resolve_guest "$target")"
+    if ! resolved="$(resolve_guest "$target")"; then
+        return 1
+    fi
+
+    IFS='|' read -r TYPE VMID NAME <<< "$resolved"
 }
 
 get_status_json() {
@@ -305,6 +310,7 @@ Usage:
   proxmoxctl list [--json]
   proxmoxctl status <VMID|name>
   proxmoxctl config <VMID|name>
+  proxmoxctl guest-memory <VMID|name>
   proxmoxctl node-status --json
 
   proxmoxctl start <VMID|name> [timeout]

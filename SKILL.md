@@ -17,6 +17,7 @@ Do not construct raw Proxmox API requests when `proxmoxctl` can perform the task
 - `/usr/local/bin/proxmoxctl list [--json]`
 - `/usr/local/bin/proxmoxctl status <VMID|name>`
 - `/usr/local/bin/proxmoxctl config <VMID|name>`
+- `/usr/local/bin/proxmoxctl guest-memory <VMID|name>`
 - `/usr/local/bin/proxmoxctl node-status --json`
 
 ### Power
@@ -47,6 +48,11 @@ For host CPU/RAM headroom questions, use:
 `/usr/local/bin/proxmoxctl node-status --json`
 
 Report only the values it returns. Treat `free_bytes` as immediately free memory; do not count cached or otherwise unreported memory as guaranteed capacity.
+
+For a QEMU VM or LXC's hypervisor-level memory baseline, use:
+`/usr/local/bin/proxmoxctl guest-memory <VMID|name>`.
+It does not execute commands in the guest; fields that require in-guest
+access are explicitly unavailable.
 
 ## Guest resolution
 
