@@ -96,6 +96,7 @@ with the same commands and behavior.
 proxmoxctl list [--json]
 proxmoxctl status <VMID|name>
 proxmoxctl config <VMID|name>
+proxmoxctl guest-memory <VMID|name>
 proxmoxctl node-status --json
 ```
 
@@ -105,6 +106,12 @@ VMID or an exact guest name. `node-status --json` returns a stable,
 machine-readable capacity snapshot containing node identity, logical CPU
 core count, current CPU utilization, load averages when supplied by Proxmox,
 and total/used/free memory in bytes.
+
+`guest-memory` accepts exactly one QEMU VM or LXC selector and returns a
+sanitized JSON baseline from the guest's Proxmox configuration and current
+status. It does not run a guest command or use guest-agent access. As a
+result, in-guest `/proc` memory details, processes, containers, and OOM logs
+are explicitly reported as unavailable rather than guessed.
 
 Example capacity query:
 
@@ -150,6 +157,12 @@ Inspect the configured CPU and memory limits for a guest:
 proxmoxctl config 101
 ```
 
+Inspect the read-only hypervisor-level memory baseline for a QEMU VM or LXC:
+
+```bash
+proxmoxctl guest-memory 101
+```
+
 ## Module layout
 
 ```text
@@ -157,6 +170,7 @@ bin/proxmoxctl                 Command launcher and command dispatch
 lib/proxmoxctl/common.sh       Protected configuration loading and API helpers
 lib/proxmoxctl/guest.sh        Guest inventory, status, and configuration reads
 lib/proxmoxctl/guest_list.py   Guest inventory JSON formatter
+lib/proxmoxctl/guest_memory.py Guest memory baseline JSON formatter
 lib/proxmoxctl/node.sh         Read-only node capacity JSON
 lib/proxmoxctl/node_status.py  Node-status JSON formatter
 lib/proxmoxctl/power.sh        Guest power and wait operations

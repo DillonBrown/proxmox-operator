@@ -68,3 +68,28 @@ cmd_config() {
         "$VMID" |
         python3 -m json.tool
 }
+
+cmd_guest_memory() {
+    local target
+    local module_dir
+
+    if (( $# != 2 )); then
+        echo "Usage: proxmoxctl guest-memory <VMID|name>" >&2
+        return 1
+    fi
+
+    target="$2"
+    module_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+    if ! guest_info "$target" >/dev/null 2>&1; then
+        echo "Unable to resolve guest from Proxmox inventory." >&2
+        return 1
+    fi
+
+    python3 "$module_dir/guest_memory.py" \
+        "$TYPE" \
+        "$VMID" \
+        "$NAME" \
+        <(get_config_json "$TYPE" "$VMID") \
+        <(get_status_json "$TYPE" "$VMID")
+}

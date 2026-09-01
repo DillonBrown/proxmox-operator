@@ -72,6 +72,7 @@ MODULES=(
     config.sh
     guest.sh
     guest_list.py
+    guest_memory.py
     node.sh
     node_status.py
     power.sh

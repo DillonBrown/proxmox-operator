@@ -42,6 +42,10 @@ case "${1:-}" in
         cmd_config "$@"
         ;;
 
+    guest-memory)
+        cmd_guest_memory "$@"
+        ;;
+
     node-status)
         cmd_node_status "$@"
         ;;
